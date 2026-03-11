@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_constants.dart';
 import '../../data/models/mahasiswa_model.dart';
 
 class MahasiswaGridCard extends StatelessWidget {

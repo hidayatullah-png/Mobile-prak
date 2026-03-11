@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:testflut/core/constants/app_constants.dart';
-import 'package:testflut/core/widgets/common_widgets.dart';
-import 'package:testflut/features/dashboard/presentation/providers/dashboard_provider.dart';
-import 'package:testflut/features/dashboard/presentation/widgets/dashboard_widgets.dart';
+import '../../../../core/constants/app_constants.dart';
+import '../../../../core/widgets/common_widgets.dart';
+import '../providers/dashboard_provider.dart';
+import '../widgets/dashboard_widgets.dart';
+import '../../../mahasiswa/presentation/pages/mahasiswa_page.dart';
+import '../../../mahasiswa_aktif/presentation/pages/mahasiswa_aktif_page.dart';
+import '../../../dosen/presentation/pages/dosen_page.dart';
+import '../../../profile/presentation/pages/profile_page.dart';
 
 class DashboardPage extends ConsumerWidget {
   const DashboardPage({Key? key}) : super(key: key);
 
-  // Helper untuk mendapatkan icon berdasarkan judul
+  // get icon
   IconData _getIconForStat(String title) {
     switch (title) {
       case 'Total Mahasiswa':
@@ -20,7 +24,7 @@ class DashboardPage extends ConsumerWidget {
       case 'Dosen':
         return Icons.people_outline_rounded;
       default:
-        return Icons.analytics_rounded;
+        return Icons.analytics_outlined;
     }
   }
 
@@ -45,6 +49,7 @@ class DashboardPage extends ConsumerWidget {
             },
             child: CustomScrollView(
               slivers: [
+                // Modern Header with Gradient
                 SliverToBoxAdapter(
                   child: Container(
                     decoration: BoxDecoration(
@@ -60,6 +65,13 @@ class DashboardPage extends ConsumerWidget {
                         bottomLeft: Radius.circular(32),
                         bottomRight: Radius.circular(32),
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context).primaryColor.withOpacity(0.3),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
                     ),
                     child: SafeArea(
                       bottom: false,
@@ -73,11 +85,10 @@ class DashboardPage extends ConsumerWidget {
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Selamat Datang',
+                                        'Selamat Datang!',
                                         style: TextStyle(
                                           color: Colors.white.withOpacity(0.9),
                                           fontSize: 16,
@@ -128,7 +139,7 @@ class DashboardPage extends ConsumerWidget {
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(
                                   color: Colors.white.withOpacity(0.2),
-                                  width: 2,
+                                  width: 1,
                                 ),
                               ),
                               child: Row(
@@ -156,6 +167,7 @@ class DashboardPage extends ConsumerWidget {
                     ),
                   ),
                 ),
+                // Stats Section with Modern Cards
                 SliverPadding(
                   padding: const EdgeInsets.all(24),
                   sliver: SliverToBoxAdapter(
@@ -179,6 +191,12 @@ class DashboardPage extends ConsumerWidget {
                               },
                               icon: const Icon(Icons.refresh_rounded, size: 18),
                               label: const Text('Refresh'),
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -186,34 +204,50 @@ class DashboardPage extends ConsumerWidget {
                         GridView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 16,
-                                mainAxisSpacing: 16,
-                                childAspectRatio: 1.1,
-                              ),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 15,
+                            childAspectRatio: 0.85,
+                          ),
                           itemCount: dashboardData.stats.length,
                           itemBuilder: (context, index) {
                             final stat = dashboardData.stats[index];
                             return ModernStatCard(
                               stats: stat,
                               icon: _getIconForStat(stat.title),
-                              gradientColors:
-                                  AppConstants.dashboardGradients[index %
-                                      AppConstants.dashboardGradients.length],
+                              gradientColors: AppConstants.dashboardGradients[
+                              index % AppConstants.dashboardGradients.length],
                               isSelected: selectedIndex == index,
                               onTap: () {
-                                // Update selected index
                                 ref
-                                        .read(
-                                          selectedStatIndexProvider.notifier,
-                                        )
-                                        .state =
-                                    index;
+                                    .read(selectedStatIndexProvider.notifier)
+                                    .state = index;
 
-                                // Handle navigation based on stat title
-                                _handleStatNavigation(context, stat.title);
+                                final statTitle = stat.title;
+                                Widget? targetPage;
+
+                                switch (statTitle) {
+                                  case 'Total Mahasiswa':
+                                    targetPage = const MahasiswaPage();
+                                    break;
+                                  case 'Mahasiswa Aktif':
+                                    targetPage = const MahasiswaAktifPage();
+                                    break;
+                                  case 'Dosen':
+                                    targetPage = const DosenPage();
+                                    break;
+                                  case 'Mahasiswa Lulus':
+                                    targetPage = const ProfilePage();
+                                    break;
+                                }
+
+                                if (targetPage != null) {
+                                  Navigator.push(
+                                    context,
+                                    _createRoute(targetPage),
+                                  );
+                                }
                               },
                             );
                           },
@@ -231,57 +265,28 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
-  // Handle navigation for different stat cards
-  void _handleStatNavigation(BuildContext context, String title) {
-    switch (title) {
-      case 'Total Mahasiswa':
-        // TODO: Uncomment when MahasiswaPage is ready
-        // Navigator.push(context, _createRoute(const MahasiswaPage()));
-        _showComingSoon(context, 'Total Mahasiswa');
-        break;
-      case 'Mahasiswa Aktif':
-        // TODO: Uncomment when MahasiswaAktifPage is ready
-        // Navigator.push(context, _createRoute(const MahasiswaAktifPage()));
-        _showComingSoon(context, 'Mahasiswa Aktif');
-        break;
-      case 'Dosen':
-        // TODO: Uncomment when DosenPage is ready
-        // Navigator.push(context, _createRoute(const DosenPage()));
-        _showComingSoon(context, 'Dosen');
-        break;
-      case 'Mahasiswa Lulus':
-        // TODO: Uncomment when ProfilePage is ready
-        // Navigator.push(context, _createRoute(const ProfilePage()));
-        _showComingSoon(context, 'Mahasiswa Lulus');
-        break;
-    }
-  }
-
-  // Show coming soon message
-  void _showComingSoon(BuildContext context, String pageName) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$pageName page - coming soon'),
-        duration: const Duration(seconds: 2),
-      ),
+  // transisi waktu pindah page
+  Route _createRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.easeInOutCubic;
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var offsetAnimation = animation.drive(tween);
+        return SlideTransition(position: offsetAnimation, child: child);
+      },
+      transitionDuration: const Duration(milliseconds: 400),
     );
   }
 
+  // convert tanggal update
   String _formatDate(DateTime date) {
     final months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'Mei',
-      'Jun',
-      'Jul',
-      'Agu',
-      'Sep',
-      'Okt',
-      'Nov',
-      'Des',
+      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
+      'Jul', 'Ago', 'Sep', 'Okt', 'Nov', 'Des'
     ];
-    return '${date.day} ${months[date.month - 1]} ${date.year}, ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+    return "${date.day} ${months[date.month - 1]} ${date.year}, ${date.hour}:${date.minute.toString().padLeft(2, '0')}";
   }
 }

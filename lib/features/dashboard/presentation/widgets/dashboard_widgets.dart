@@ -4,6 +4,7 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../data/models/dashboard_model.dart';
 
+/// Widget untuk menampilkan statistik card
 class StatCard extends StatelessWidget {
   final DashboardStats stats;
   final bool isSelected;
@@ -27,11 +28,12 @@ class StatCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(AppConstants.paddingMedium),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 stats.title,
-                style: TextStyle(
+                style: const TextStyle(
+                  fontSize: 14,
                   color: AppTheme.textSecondaryColor,
                   fontWeight: FontWeight.w500,
                 ),
@@ -46,6 +48,35 @@ class StatCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(
+                    stats.isIncrease ? Icons.trending_up : Icons.trending_down,
+                    size: 16,
+                    color: stats.isIncrease ? AppTheme.successColor : AppTheme.errorColor,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${stats.percentage.toStringAsFixed(1)}%',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: stats.isIncrease ? AppTheme.successColor : AppTheme.errorColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      stats.subtitle,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppTheme.textSecondaryColor,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -54,7 +85,6 @@ class StatCard extends StatelessWidget {
   }
 }
 
-/// Header Widget
 class DashboardHeader extends ConsumerWidget {
   final String userName;
 
@@ -64,9 +94,9 @@ class DashboardHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: const EdgeInsets.all(AppConstants.paddingLarge),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppTheme.primaryColor,
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(AppConstants.radiusLarge),
           bottomRight: Radius.circular(AppConstants.radiusLarge),
         ),
@@ -125,7 +155,7 @@ class DashboardHeader extends ConsumerWidget {
   }
 }
 
-//Modern Stat card with gradient and glass morphis
+/// Modern Stat Card with Gradient and Glass Morphism
 class ModernStatCard extends StatefulWidget {
   final DashboardStats stats;
   final IconData icon;
@@ -143,14 +173,14 @@ class ModernStatCard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<ModernStatCard> createState() => _ModernStatCardState();
+  State<ModernStatCard> createState() => ModernStatCardState();
 }
 
-class _ModernStatCardState extends State<ModernStatCard>
+class ModernStatCardState extends State<ModernStatCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
-  bool _isPressed = false;
+  bool isPressed = false;
 
   @override
   void initState() {
@@ -161,7 +191,7 @@ class _ModernStatCardState extends State<ModernStatCard>
     );
     _scaleAnimation = Tween<double>(
       begin: 1.0,
-      end: 0.9,
+      end: 0.95,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
@@ -175,22 +205,16 @@ class _ModernStatCardState extends State<ModernStatCard>
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapDown: (_) {
-        setState(() {
-          _isPressed = true;
-        });
+        setState(() => isPressed = true);
         _controller.forward();
       },
       onTapUp: (_) {
-        setState(() {
-          _isPressed = false;
-        });
+        setState(() => isPressed = false);
         _controller.reverse();
         widget.onTap?.call();
       },
       onTapCancel: () {
-        setState(() {
-          _isPressed = false;
-        });
+        setState(() => isPressed = false);
         _controller.reverse();
       },
       child: ScaleTransition(
@@ -202,17 +226,18 @@ class _ModernStatCardState extends State<ModernStatCard>
               end: Alignment.bottomRight,
               colors: widget.gradientColors,
             ),
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
                 color: widget.gradientColors[0].withOpacity(0.3),
                 blurRadius: widget.isSelected ? 20 : 12,
-                offset: const Offset(0, 10),
+                offset: Offset(0, widget.isSelected ? 8 : 4),
               ),
             ],
           ),
           child: Stack(
             children: [
+              // Background decoration circles
               Positioned(
                 right: -20,
                 top: -20,
@@ -226,7 +251,7 @@ class _ModernStatCardState extends State<ModernStatCard>
                 ),
               ),
               Positioned(
-                left: -20,
+                left: -10,
                 bottom: -10,
                 child: Container(
                   width: 60,
@@ -237,8 +262,7 @@ class _ModernStatCardState extends State<ModernStatCard>
                   ),
                 ),
               ),
-
-              //content
+              // Content
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
@@ -254,7 +278,6 @@ class _ModernStatCardState extends State<ModernStatCard>
                       child: Icon(widget.icon, color: Colors.white, size: 24),
                     ),
                     const Spacer(),
-
                     // Value
                     Text(
                       widget.stats.value,
@@ -262,17 +285,17 @@ class _ModernStatCardState extends State<ModernStatCard>
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
+                        letterSpacing: -0.5,
                       ),
                     ),
                     const SizedBox(height: 4),
-
                     // Title
                     Text(
                       widget.stats.title,
                       style: TextStyle(
                         fontSize: 13,
-                        fontWeight: FontWeight.w500,
                         color: Colors.white.withOpacity(0.9),
+                        fontWeight: FontWeight.w500,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,

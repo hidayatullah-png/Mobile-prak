@@ -3,15 +3,15 @@ class DashboardStats {
   final String title;
   final String value;
   final String subtitle;
-  final double percentage; // AKTIF: Tanda // dihapus
-  final bool isIncrease;   // AKTIF: Tanda // dihapus
+  final double percentage;
+  final bool isIncrease;
 
   DashboardStats({
     required this.title,
     required this.value,
     required this.subtitle,
-    required this.percentage, // AKTIF: Tanda // dihapus
-    required this.isIncrease, // AKTIF: Tanda // dihapus
+    required this.percentage,
+    required this.isIncrease,
   });
 
   factory DashboardStats.fromJson(Map<String, dynamic> json) {
@@ -19,8 +19,8 @@ class DashboardStats {
       title: json['title'] ?? '',
       value: json['value'] ?? '0',
       subtitle: json['subtitle'] ?? '',
-      percentage: (json['percentage'] ?? 0).toDouble(), // AKTIF: Tanda // dihapus
-      isIncrease: json['isIncrease'] ?? true,           // AKTIF: Tanda // dihapus
+      percentage: (json['percentage'] ?? 0).toDouble(),
+      isIncrease: json['isIncrease'] ?? true,
     );
   }
 
@@ -29,8 +29,8 @@ class DashboardStats {
       'title': title,
       'value': value,
       'subtitle': subtitle,
-      'percentage': percentage, // AKTIF: Tanda // dihapus
-      'isIncrease': isIncrease, // AKTIF: Tanda // dihapus
+      'percentage': percentage,
+      'isIncrease': isIncrease,
     };
   }
 }
@@ -50,14 +50,14 @@ class DashboardData {
   factory DashboardData.fromJson(Map<String, dynamic> json) {
     return DashboardData(
       stats: (json['stats'] as List?)
-              ?.map((e) => DashboardStats.fromJson(e))
-              .toList() ?? 
+          ?.map((e) => DashboardStats.fromJson(e))
+          .toList() ??
           [],
       userName: json['userName'] ?? 'User',
       lastUpdate: DateTime.parse(
         json['lastUpdate'] ?? DateTime.now().toString(),
       ),
-    ); 
+    );
   }
 
   Map<String, dynamic> toJson() {
