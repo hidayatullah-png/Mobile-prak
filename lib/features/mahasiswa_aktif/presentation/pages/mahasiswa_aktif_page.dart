@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/widgets/common_widgets.dart';
-import '../../../mahasiswa/presentation/provider/mahasiswa_provider.dart';
-import '../../../mahasiswa/presentation/widgets/mahasiswa_widgets.dart';
+import '../../../../core/widgets/common_widgets.dart'; 
+import '../providers/mahasiswa_aktif_provider.dart';
+import '../widgets/mahasiswa_aktif_widgets.dart';
 
 class MahasiswaAktifPage extends ConsumerWidget {
   const MahasiswaAktifPage({Key? key}) : super(key: key);
@@ -50,7 +50,8 @@ class MahasiswaAktifPage extends ConsumerWidget {
                 final mhs = listMahasiswaAktif[index];
                 final color = AppConstants.gradientPink[0];
 
-                return MahasiswaGridCard(mahasiswa: mhs, cardColor: color);
+                // Memanggil Widget Baru Khusus Mahasiswa Aktif
+                return MahasiswaAktifGridCard(mahasiswaAktif: mhs, cardColor: color);
               },
             ),
           );

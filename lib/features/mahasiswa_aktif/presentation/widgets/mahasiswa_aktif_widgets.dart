@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../data/models/mahasiswa_model.dart'; 
+import '../../data/models/mahasiswa_aktif_model.dart';
 
-class MahasiswaGridCard extends StatelessWidget {
-  final MahasiswaModel mahasiswa;
+class MahasiswaAktifGridCard extends StatelessWidget {
+  final MahasiswaAktifModel mahasiswaAktif;
   final Color cardColor;
 
-  const MahasiswaGridCard({
+  const MahasiswaAktifGridCard({
     Key? key,
-    required this.mahasiswa,
+    required this.mahasiswaAktif,
     required this.cardColor,
   }) : super(key: key);
 
@@ -37,25 +37,23 @@ class MahasiswaGridCard extends StatelessWidget {
             ),
           ),
 
-          // Karena isAktif tidak ada di API, kita pakai id Genap agar titik hijaunya tetap ada 
-          // untuk mempertahankan desain UI aslimu
-          if (mahasiswa.id % 2 == 0)
-            Positioned(
-              top: 10,
-              right: 10,
-              child: Container(
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(
-                  color: Colors.greenAccent[700],
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2),
-                  boxShadow: [
-                    BoxShadow(color: Colors.green.withOpacity(0.5), blurRadius: 4),
-                  ],
-                ),
+          // Simulasi titik hijau (karena semua di halaman ini dianggap aktif)
+          Positioned(
+            top: 10,
+            right: 10,
+            child: Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                color: Colors.greenAccent[700],
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2),
+                boxShadow: [
+                  BoxShadow(color: Colors.green.withOpacity(0.5), blurRadius: 4),
+                ],
               ),
             ),
+          ),
 
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 20, 12, 12),
@@ -65,8 +63,7 @@ class MahasiswaGridCard extends StatelessWidget {
                   radius: 35,
                   backgroundColor: cardColor,
                   child: Text(
-                    // Mengambil huruf pertama dari name
-                    mahasiswa.name.isNotEmpty ? mahasiswa.name.substring(0, 1).toUpperCase() : 'M',
+                    mahasiswaAktif.title.isNotEmpty ? mahasiswaAktif.title.substring(0, 1).toUpperCase() : 'M',
                     style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -77,7 +74,7 @@ class MahasiswaGridCard extends StatelessWidget {
                 const SizedBox(height: 12),
 
                 Text(
-                  mahasiswa.name, // Menggunakan name dari API
+                  mahasiswaAktif.title,
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -90,9 +87,7 @@ class MahasiswaGridCard extends StatelessWidget {
                 const SizedBox(height: 4),
 
                 Text(
-                  mahasiswa.email, // NIM diganti jadi Email agar kolom ini tidak kosong
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  'Post ID: ${mahasiswaAktif.id}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey[600],
@@ -108,8 +103,7 @@ class MahasiswaGridCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    // Jurusan diganti jadi Body/Komentar dari API, dibersihkan enter-nya
-                    mahasiswa.body.replaceAll('\n', ' '), 
+                    mahasiswaAktif.body.replaceAll('\n', ' '),
                     textAlign: TextAlign.center,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
