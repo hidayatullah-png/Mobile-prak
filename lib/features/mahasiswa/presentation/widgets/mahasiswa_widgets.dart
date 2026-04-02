@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/models/mahasiswa_model.dart'; 
+import '../../data/models/mahasiswa_model.dart';
 
 class MahasiswaGridCard extends StatelessWidget {
   final MahasiswaModel mahasiswa;
@@ -29,6 +29,7 @@ class MahasiswaGridCard extends StatelessWidget {
       child: Stack(
         alignment: Alignment.topCenter,
         children: [
+
           Container(
             height: 60,
             decoration: BoxDecoration(
@@ -37,9 +38,7 @@ class MahasiswaGridCard extends StatelessWidget {
             ),
           ),
 
-          // Karena isAktif tidak ada di API, kita pakai id Genap agar titik hijaunya tetap ada 
-          // untuk mempertahankan desain UI aslimu
-          if (mahasiswa.id % 2 == 0)
+          if (mahasiswa.isAktif)
             Positioned(
               top: 10,
               right: 10,
@@ -61,12 +60,12 @@ class MahasiswaGridCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(12, 20, 12, 12),
             child: Column(
               children: [
+
                 CircleAvatar(
                   radius: 35,
                   backgroundColor: cardColor,
                   child: Text(
-                    // Mengambil huruf pertama dari name
-                    mahasiswa.name.isNotEmpty ? mahasiswa.name.substring(0, 1).toUpperCase() : 'M',
+                    mahasiswa.nama.substring(0, 1).toUpperCase(),
                     style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -77,7 +76,7 @@ class MahasiswaGridCard extends StatelessWidget {
                 const SizedBox(height: 12),
 
                 Text(
-                  mahasiswa.name, // Menggunakan name dari API
+                  mahasiswa.nama,
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -90,9 +89,7 @@ class MahasiswaGridCard extends StatelessWidget {
                 const SizedBox(height: 4),
 
                 Text(
-                  mahasiswa.email, // NIM diganti jadi Email agar kolom ini tidak kosong
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  'NIM: ${mahasiswa.nim}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey[600],
@@ -108,8 +105,7 @@ class MahasiswaGridCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    // Jurusan diganti jadi Body/Komentar dari API, dibersihkan enter-nya
-                    mahasiswa.body.replaceAll('\n', ' '), 
+                    mahasiswa.jurusan,
                     textAlign: TextAlign.center,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

@@ -1,36 +1,24 @@
 class MahasiswaModel {
-  final int postId;
-  final int id;
-  final String name;
+  final String nama;
+  final String nim;
+  final String jurusan;
   final String email;
-  final String body;
+  final bool isAktif;
 
   MahasiswaModel({
-    required this.postId,
-    required this.id,
-    required this.name,
+    required this.nama,
+    required this.nim,
+    required this.jurusan,
     required this.email,
-    required this.body,
+    this.isAktif = false,
   });
-
   factory MahasiswaModel.fromJson(Map<String, dynamic> json) {
     return MahasiswaModel(
-      postId: json['postId'] ?? 0,
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-      email: json['email'] ?? '',
-      body: json['body'] ?? '',
+      nama: json['name'] ?? 'Tanpa Nama',
+      email: json['email'] ?? 'Tidak ada email',
+      nim: json['id'].toString(),
+      jurusan: 'Komentator',
+      isAktif: json['id'] % 2 == 0,
     );
-  }
-
-  // Tambahkan toJson sekalian untuk melengkapi struktur (opsional tapi disarankan)
-  Map<String, dynamic> toJson() {
-    return {
-      'postId': postId,
-      'id': id,
-      'name': name,
-      'email': email,
-      'body': body,
-    };
   }
 }

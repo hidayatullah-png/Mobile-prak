@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/widgets/common_widgets.dart'; 
-import '../providers/mahasiswa_aktif_provider.dart';
-import '../widgets/mahasiswa_aktif_widgets.dart';
+import '../../../../core/widgets/common_widgets.dart';
+import '../../../mahasiswa/presentation/provider/mahasiswa_provider.dart';
+import '../../../mahasiswa/presentation/widgets/mahasiswa_widgets.dart';
 
 class MahasiswaAktifPage extends ConsumerWidget {
   const MahasiswaAktifPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mahasiswaAktifState = ref.watch(mahasiswaAktifNotifierProvider);
+    final mahasiswaAktifState = ref.watch(mahasiswaAktifProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -20,7 +20,7 @@ class MahasiswaAktifPage extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
-            onPressed: () => ref.invalidate(mahasiswaAktifNotifierProvider),
+            onPressed: () => ref.invalidate(mahasiswaAktifProvider),
           ),
         ],
       ),
@@ -28,7 +28,7 @@ class MahasiswaAktifPage extends ConsumerWidget {
         loading: () => const LoadingWidget(),
         error: (error, stack) => CustomErrorWidget(
           message: 'Gagal memuat data: $error',
-          onRetry: () => ref.invalidate(mahasiswaAktifNotifierProvider),
+          onRetry: () => ref.invalidate(mahasiswaAktifProvider),
         ),
         data: (listMahasiswaAktif) {
           if (listMahasiswaAktif.isEmpty) {
@@ -36,7 +36,7 @@ class MahasiswaAktifPage extends ConsumerWidget {
           }
 
           return RefreshIndicator(
-            onRefresh: () async => ref.invalidate(mahasiswaAktifNotifierProvider),
+            onRefresh: () async => ref.invalidate(mahasiswaAktifProvider),
             child: GridView.builder(
               padding: const EdgeInsets.all(AppConstants.paddingLarge),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -50,8 +50,7 @@ class MahasiswaAktifPage extends ConsumerWidget {
                 final mhs = listMahasiswaAktif[index];
                 final color = AppConstants.gradientPink[0];
 
-                // Memanggil Widget Baru Khusus Mahasiswa Aktif
-                return MahasiswaAktifGridCard(mahasiswaAktif: mhs, cardColor: color);
+                return MahasiswaGridCard(mahasiswa: mhs, cardColor: color);
               },
             ),
           );
